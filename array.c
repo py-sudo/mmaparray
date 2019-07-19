@@ -16,18 +16,37 @@
 #include "array.h"
 #include "functions.h"
 
+//#include <libexplain/mmap.h>
+
 /**********************************************************************/
 /********************       O P E N  A R R A Y     ********************/
 /**********************************************************************/
+
+
 void open_array(char *filename, array_t *arrayp, int *sizep)
-{				/* Opens array from file filename and */
-                                /* returns its pointer and size */
+{	/* Opens array from file filename and */
+  /* returns its pointer and size */
   /* size is the size of the file divided by the size of the array struct */
   /* pointer array is obtained with mmap */
-  
-  printf("inside open array\n");
-  printf("%s....\n",*&filename);
-  printf("%d....\n",*sizep);
+
+    struct stat st;
+    int status = stat(filename, &st);
+    if(status !=0){
+      fatalerr(filename,0,"no such file in current directory");
+    }
+
+    // open file to fd
+    int fd = open(filename, O_RDWR, 0);  
+    if(fd==-1){
+      fatalerr(filename,0,"open file fail");
+    }
+   
+    arrayp = mmap(NULL,st.st_size,PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0);
+    *sizep = st.st_size / sizeof(array_t);
+  // printf("st.st_size is %d....\n",st.st_size);
+  // printf("size of array t %d....\n",sizeof(array_t));
+  // printf("%d....\n",*sizep);
+
 }
 
 /**********************************************************************/
@@ -43,11 +62,42 @@ void close_array(array_t *arrayp, int size)
 /**********************************************************************/
 void create_array(char *filename, int index, array_t *arrayp)
 {				/* Creates a file with an array with index */
-                                /* elements, all with the valid member false. */
-                                /* It is fatal error if file exists */
-  /* size is the size of the file divided by the size of the array struct */
-  /* pointer array is obtained with mmap */
-  
+         /* elements, all with the valid member false. */
+         /* It is fatal error if file exists */
+        /* size is the size of the file divided by the size of the array struct */
+        /* pointer array is obtained with mmap */
+  if( access( filename, F_OK ) != -1 ) {
+    // file exists
+    fatalerr(filename,0,"file already exits");
+    } 
+
+     // open file to fd
+     int fd = open(filename, O_CREAT | O_RDWR, 0);  
+     if(fd == -1){
+       fatalerr(filename,0,"create file fail");
+     }
+
+
+    struct stat st;
+    int status = fstat(fd, &st);
+    if(status !=0){
+      fatalerr(filename,0,"no such file in current directory");
+    }
+     array_t temp;      
+    size_t s = st.st_size/sizeof(array_t);
+    printf("size is %d\n",st.st_size);
+    arrayp = (array_t*)mmap(NULL,20,PROT_READ | PROT_WRITE,MAP_SHARED, fd, 0);
+    
+    printf("result is %d\n",arrayp);
+    if (arrayp == MAP_FAILED) {
+    close(fd);
+    fatalerr(filename,0,"mmap failed");
+   // fprintf(stderr, "%s\n", explain_mmap(NULL, st.st_size/sizeof(array_t), PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0));
+    exit(EXIT_FAILURE);
+    }
+
+
+
 }
 
 
@@ -58,6 +108,8 @@ void set_entry(array_t array, char *name, int index, float age)
 {				/* Sets the elements of the index'ed */
                                 /* entry to name and age and the valid */
                                 /* member to true */
+
+            printf("inside set entry for index %d",index);
  
 }
 
