@@ -15,7 +15,15 @@
 ************************************************************************/
 int main(int argc, char **argv)
 {
-  char *filename="namedb";
+  char *filename = "namedb";
+  char abc[10] = "accsa";
+  char *ptr = malloc(5 * sizeof(char));
+  
+  int j;
+  for(j=0;j<5;j++){
+      (ptr + j) = (void *)&abc[j];      
+  }
+
   int size=-1;
   char *name=NULL;
   array_t array=NULL;
@@ -23,6 +31,12 @@ int main(int argc, char **argv)
   float age=-1.0;
   int i;
   int argv_i_len;
+printf("filename is %s\n",*&filename);
+char s[10] = "hello";
+
+printf("s is %s\n",s);
+//printf("abc is %c\n",(void *)&abc[0]);
+printf("ptr is %s\n",*(&ptr));
 
   i=1;
   while (i<argc) {
@@ -101,5 +115,7 @@ int main(int argc, char **argv)
     else fatalerr(argv[i],0,"Invalid option");
     i++;
   }
+  printf("before open array\n");
+   open_array(filename,&array,&size);
   close_array(&array, size);
 }

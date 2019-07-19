@@ -24,6 +24,10 @@ void open_array(char *filename, array_t *arrayp, int *sizep)
                                 /* returns its pointer and size */
   /* size is the size of the file divided by the size of the array struct */
   /* pointer array is obtained with mmap */
+  
+  printf("inside open array\n");
+  printf("%s....\n",*&filename);
+  printf("%d....\n",*sizep);
 }
 
 /**********************************************************************/
