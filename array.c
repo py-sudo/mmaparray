@@ -43,10 +43,8 @@ void open_array(char *filename, array_t *arrayp, int *sizep)
    
     arrayp = mmap(NULL,st.st_size,PROT_READ, MAP_SHARED, fd, 0);
     *sizep = st.st_size / sizeof(array_t);
-  // printf("st.st_size is %d....\n",st.st_size);
-  // printf("size of array t %d....\n",sizeof(array_t));
-  // printf("%d....\n",*sizep);
 
+    printf("size of array is %d\n",*sizep);
 }
 
 /**********************************************************************/
@@ -66,36 +64,27 @@ void create_array(char *filename, int index, array_t *arrayp)
          /* It is fatal error if file exists */
         /* size is the size of the file divided by the size of the array struct */
         /* pointer array is obtained with mmap */
-  if( access( filename, F_OK ) != -1 ) {
+      if( access( filename, F_OK ) != -1 ) {
     // file exists
     fatalerr(filename,0,"file already exits");
     } 
 
      // open file to fd
+      int size = index + 1;
      int fd = open(filename, O_CREAT | O_RDWR, 00700);  
      if(fd == -1){
        fatalerr(filename,0,"create file fail");
      }
 
-
-    struct stat st;
-    int status = fstat(fd, &st);
-    if(status !=0){
-      fatalerr(filename,0,"no such file in current directory");
-    }
-    
-    size_t s = st.st_size/sizeof(array_t);
-
-   
-    arrayp = (array_t*)mmap(NULL,20,PROT_READ | PROT_WRITE,MAP_SHARED, fd, 0);
-    
+    ftruncate(fd,sizeof(array_t)*size);
   
+    *arrayp = mmap(NULL,size*sizeof(array_t),PROT_READ | PROT_WRITE,MAP_SHARED, fd, 0);
     if (arrayp == MAP_FAILED) {
     close(fd);
     fatalerr(filename,0,"mmap failed");
-   // fprintf(stderr, "%s\n", explain_mmap(NULL, st.st_size/sizeof(array_t), PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0));
     exit(EXIT_FAILURE);
     }
+
 
 
 
