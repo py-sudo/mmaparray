@@ -41,7 +41,7 @@ void open_array(char *filename, array_t *arrayp, int *sizep)
       fatalerr(filename,0,"open file fail");
     }
    
-    arrayp = mmap(NULL,st.st_size,PROT_READ, MAP_PRIVATE | MAP_POPULATE, fd, 0);
+    arrayp = mmap(NULL,st.st_size,PROT_READ, MAP_SHARED, fd, 0);
     *sizep = st.st_size / sizeof(array_t);
   // printf("st.st_size is %d....\n",st.st_size);
   // printf("size of array t %d....\n",sizeof(array_t));
@@ -72,7 +72,7 @@ void create_array(char *filename, int index, array_t *arrayp)
     } 
 
      // open file to fd
-     int fd = open(filename, O_CREAT | O_RDWR, 0);  
+     int fd = open(filename, O_CREAT | O_RDWR, 00700);  
      if(fd == -1){
        fatalerr(filename,0,"create file fail");
      }
@@ -83,12 +83,13 @@ void create_array(char *filename, int index, array_t *arrayp)
     if(status !=0){
       fatalerr(filename,0,"no such file in current directory");
     }
-     array_t temp;      
+    
     size_t s = st.st_size/sizeof(array_t);
-    printf("size is %d\n",st.st_size);
+
+   
     arrayp = (array_t*)mmap(NULL,20,PROT_READ | PROT_WRITE,MAP_SHARED, fd, 0);
     
-    printf("result is %d\n",arrayp);
+  
     if (arrayp == MAP_FAILED) {
     close(fd);
     fatalerr(filename,0,"mmap failed");
@@ -137,5 +138,9 @@ void delete_entry(array_t array, int index)
 void print_array(array_t array, int size)
 {				/* Prints all entries with valid member true */
                                 /* using the same format as in the main */
- 
+  int i;
+
+  for(i=0;i<size;i++){
+    printf("index: %d, name: %s, age: %f\n",array[i].index,array[i].name,array[i].age);
+  }
 }

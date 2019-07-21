@@ -9,13 +9,13 @@ HDR = array.h functions.h
 TRG = mmaparray
 
 ${TRG}: ${OBJ}
-	gcc ${OBJ} -pthread -lc -o ${TRG}
+	gcc -g ${OBJ} -pthread -lc -o ${TRG}
 
 main.o: main.c ${HDR}
-	gcc -c -pthread main.c
+	gcc -g -c -pthread main.c
 
 error.o: error.c ${HDR}
-	gcc -c error.c
+	gcc -g -c error.c
 
 clean:
 	/bin/rm ${OBJ} ${TRG} *~
