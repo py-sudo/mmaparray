@@ -1,7 +1,7 @@
 /***********************************************************************/
-/**      Author: Minas Spetsakis                                      **/
+/**      Author: Peiyi Guan                                           **/
 /**        Date: Jul. 2019                                            **/
-/** Description: Assgn. III                                           **/
+/** Description: Assgn. III  eecs3221                                 **/
 /***********************************************************************/
 #include <stdio.h>
 #include <string.h>
@@ -45,7 +45,6 @@ void open_array(char *filename, array_t *arrayp, int *sizep)
   *arrayp = mmap(NULL, st.st_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
   *sizep = st.st_size / sizeof(array_t);
 
-  printf("size of array is %d\n", *sizep);
 }
 
 /**********************************************************************/
@@ -98,11 +97,13 @@ void set_entry(array_t array, char *name, int index, float age)
   /* entry to name and age and the valid */
   /* member to true */
   array[index].age = age;
+  array[index].index = index;
+  
   strcpy(array[index].name, name);
   array[index].valid = 1;
-  printf("inside set entry for index %d\n", index);
-  printf("inside set entry for age %f\n", array[index].age);
-  printf("inside set entry for name %s\n", array[index].name);
+  // printf("inside set entry for index %d\n", index);
+  // printf("inside set entry for age %f\n", array[index].age);
+  // printf("inside set entry for name %s\n", array[index].name);
 }
 
 /**********************************************************************/
@@ -117,10 +118,9 @@ void get_entry(array_t array, char **name, int index, float *age)
     exit(EXIT_FAILURE);
   }
 
-
-  printf("inside get entry in main\n");
-  printf("valid is %d\n",array[index].valid);
-  printf("age is %f\n",array[index].age);
+  // printf("inside get entry in main\n");
+  // printf("valid is %d\n",array[index].valid);
+  // printf("age is %f\n",array[index].age);
 
       *name = array[index].name;
       *age = array[index].age;
@@ -146,6 +146,6 @@ void print_array(array_t array, int size)
   for (i = 0; i < size+1; i++)
   {
     if (array[i].valid == 1)
-      printf("index: %d, name: %s, age: %f\n", i, array[i].name, array[i].age);
+      printf("index: %d, name: %s, age: %f\n", array[i].index, array[i].name, array[i].age);
   }
 }
