@@ -18,85 +18,6 @@
  #include <sys/types.h>
 #include <fcntl.h>
 
-///
-
-
-// void open_array_inmain(char *filename, array_t *arrayp, int *sizep){
-
-//     struct stat st;
-//     int status = stat(filename, &st);
-//     if(status !=0){
-//       fatalerr(filename,0,"no such file in current directory");
-//     }
-
-//     // open file to fd
-//     int fd = open(filename, O_RDWR, 00700);  
-//     if(fd==-1){
-//       fatalerr(filename,0,"open file fail");
-//     }
-//     *sizep = st.st_size / sizeof(array_t);
-
-//     *arrayp = mmap(NULL,st.st_size,PROT_READ, MAP_SHARED, fd, 0);
-    
-// }
-
-
-// void create_array_inmain(char *filename, int index, array_t *arrayp){
- 
-//       if( access( filename, F_OK ) != -1 ) {
-//     // file exists
-//     fatalerr(filename,0,"file already exits");
-//     } 
-
-//      // open file to fd
-//       int size = index + 1;
-//      int fd = open(filename, O_CREAT | O_RDWR, 00700);  
-//      if(fd == -1){
-//        fatalerr(filename,0,"create file fail");
-//      }
-
-//     ftruncate(fd,sizeof(array_t)*size);
-  
-//     *arrayp = mmap(NULL,size*sizeof(array_t),PROT_READ | PROT_WRITE,MAP_SHARED, fd, 0);
-//     if (arrayp == MAP_FAILED) {
-//     close(fd);
-//     fatalerr(filename,0,"mmap failed");
-//     exit(EXIT_FAILURE);
-//     }
-
-// // int i = 0;
-// // for(i=0;i<size;i++){
-// // 	arrayp[i] = malloc(sizeof(array_t));
-// //       arrayp[i]->index = i;
-// //       arrayp[i]->valid = 0;
-// //       arrayp[i]->age = 0.0;
-// //        printf("i is %d\n",i);
-
-// //     }
-    
-
-// }
-
-void set_array_inmain(array_t array, char *name, int index, float age){
-
-  array[index].age = age;
-
-
-}
-
-
-void print_array_inmain(array_t array, int size)
-{				/* Prints all entries with valid member true */
-                                /* using the same format as in the main */
-  int i;
-  
-
-  for(i=0;i<size;i++){
-    array_t a = (array_t)&array[i];
-  //  printf("index: %d, name: %s, age: %f\n",&array[i].index,&array[i].name,&array[i].age);
-  }
-}
-
 
 
 /***********************************************************************
@@ -115,10 +36,6 @@ int main(int argc, char **argv)
   int argv_i_len;
 
 
-//create_array_inmain(filename,20,&array);
-//  open_array_inmain(filename,&array,&size);
-//  set_array_inmain(array,"kevin",0, 16.0);
-//   print_array_inmain(array, 20);
 
   i=1;
   while (i<argc) {
@@ -154,6 +71,7 @@ int main(int argc, char **argv)
 	open_array(filename,&array, &size);
       if (index>=size)
 	fatalerr(argv[0],0,"index out of bounds");
+
       set_entry(array, name, index, age);
       name = NULL;
       index = -1;
@@ -164,9 +82,15 @@ int main(int argc, char **argv)
 	fatalerr(argv[0],0,"index undefined");
       if (array==NULL)
 	open_array(filename,&array, &size);
+      
+      printf("size is %d\n",size);
       if (index>=size)
 	fatalerr(argv[0],0,"index out of bounds");
+
+
       get_entry(array, &name, index, &age);
+      
+
       printf("index: %d, name: %s, age: %f\n", index, name, age);
     }
     else if (strncmp("--create",argv[i],argv_i_len)==0) {
@@ -177,6 +101,8 @@ int main(int argc, char **argv)
 	fatalerr(argv[0],0,"index undefined");
       size = index;
       create_array(filename, size, &array);
+
+      printf("array created\n");
     }
     else if (strncmp("--print",argv[i],argv_i_len)==0) {
       if (array==NULL)
