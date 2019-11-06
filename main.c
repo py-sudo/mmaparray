@@ -1,7 +1,6 @@
 /***********************************************************************/
-/**      Author: Minas Spetsakis                                      **/
+/**      Author: Peiyi Guan                                    **/
 /**        Date: Jul. 2019                                            **/
-/** Description: Assgn. III                                           **/
 /***********************************************************************/
 #include <stdio.h>
 #include <string.h>

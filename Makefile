@@ -1,6 +1,5 @@
-# Author: Minas Spetsakis
+# Author: Peiyi Guan
 # Date: July 2019
-# Description: Assignment III
 
 SRC = main.c error.c array.c
 OBJ = main.o error.o array.o
